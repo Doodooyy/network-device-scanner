@@ -30,15 +30,17 @@ if __name__ == "__main__":
     interface_ip, netmask = info
     subnet = str(ipaddress.IPv4Network(f"{interface_ip}/{netmask}", strict=False) )
     devices = ARP_scan(subnet,iface)
+    timestamp = datetime.now(timezone.utc).isoformat()
 
-    # printing the data (Remove this later!!!!!@@#!!!@)
+    # printing the data (Remove this later!!!!!@@#!!!@)-------
     print("Found",len(devices),"Devices")
+    print("Subnet scanned:",subnet)
+    print("Timestamp:",timestamp)
     for device in devices:
         print("IP: ",device["ip"])
         print("MAC: ",device["mac"])
-    #------
+    #---------------------------------------------------------
     
-    timestamp = datetime.now(timezone.utc).isoformat()
     network_snapshot = {"meta":{
         "interface":iface,
         "interface_ip":interface_ip,
