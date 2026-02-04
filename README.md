@@ -9,3 +9,5 @@ What kind of devices are they?
 What are they doing / exposing?
 
 How are they related (same subnet, gateway, etc.)?
+
+choose the interface/list all interfaces //?
