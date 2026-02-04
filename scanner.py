@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 import netifaces
 import sys
 import ipaddress
+import json
 def ARP_scan(subnet,iface):
     packet = Ether(dst="ff:ff:ff:ff:ff:ff") / ARP(pdst=subnet)
     answered = srp(packet,iface=iface,timeout=2)[0]
@@ -32,14 +33,14 @@ if __name__ == "__main__":
     devices = ARP_scan(subnet,iface)
     timestamp = datetime.now(timezone.utc).isoformat()
 
-    # printing the data (Remove this later!!!!!@@#!!!@)-------
-    print("Found",len(devices),"Devices")
-    print("Subnet scanned:",subnet)
-    print("Timestamp:",timestamp)
-    for device in devices:
-        print("IP: ",device["ip"])
-        print("MAC: ",device["mac"])
-    #---------------------------------------------------------
+    # # printing the data (Remove this later!!!!!@@#!!!@)-------
+    # print("Found",len(devices),"Devices")
+    # print("Subnet scanned:",subnet)
+    # print("Timestamp:",timestamp)
+    # for device in devices:
+    #     print("IP: ",device["ip"])
+    #     print("MAC: ",device["mac"])
+    # #---------------------------------------------------------
     
     network_snapshot = {"meta":{
         "interface":iface,
@@ -49,3 +50,5 @@ if __name__ == "__main__":
         },
         "devices":devices
     }
+
+json.dump(network_snapshot, sys.stdout, indent=4)
