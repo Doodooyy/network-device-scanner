@@ -11,14 +11,12 @@ def get_oui_database():
     for i in file:
         if(i[0]!='#'):
             mac_vendor = i.split('\t')
-            ouidata[mac_vendor[0]] = mac_vendor[-1]
+            ouidata[mac_vendor[0][:6]] = mac_vendor[-1]
 
 def lookup_vendor(mac):
-    m = mac.replace(":","").upper()
-    try:
-        return ouidata[m[:6]]
-    except:
-        return "Unknown"
+    m = mac.replace(":", "").upper()
+    return ouidata.get(m[:6], "Unknown")
+
     
 
 def ARP_scan(subnet,iface):
