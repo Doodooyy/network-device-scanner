@@ -12,6 +12,17 @@ def ARP_scan(subnet,iface):
         devices.append({"ip":received.psrc,"mac":received.hwsrc})
     return devices
 
+
+def get_oui_database():
+    file = open("data/ieee-oui.txt",mode='r')
+    ouidata = {}
+    for i in file:
+        if(i[0]!='#'):
+            mac_vendor = i.split('\t')
+            ouidata[mac_vendor[0]] = mac_vendor[-1]
+
+def lookup_vendor(devices):
+    pass
 def get_interface_info(iface):
     addresses = netifaces.ifaddresses(iface)
 
@@ -32,15 +43,6 @@ if __name__ == "__main__":
     subnet = str(ipaddress.IPv4Network(f"{interface_ip}/{netmask}", strict=False) )
     devices = ARP_scan(subnet,iface)
     timestamp = datetime.now(timezone.utc).isoformat()
-
-    # # printing the data (Remove this later!!!!!@@#!!!@)-------
-    # print("Found",len(devices),"Devices")
-    # print("Subnet scanned:",subnet)
-    # print("Timestamp:",timestamp)
-    # for device in devices:
-    #     print("IP: ",device["ip"])
-    #     print("MAC: ",device["mac"])
-    # #---------------------------------------------------------
     
     network_snapshot = {"meta":{
         "interface":iface,
@@ -51,4 +53,4 @@ if __name__ == "__main__":
         "devices":devices
     }
 
-json.dump(network_snapshot, sys.stdout, indent=4)
+# json.dump(network_snapshot, sys.stdout, indent=4)
