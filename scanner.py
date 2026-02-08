@@ -4,25 +4,31 @@ import netifaces
 import sys
 import ipaddress
 import json
-def ARP_scan(subnet,iface):
-    packet = Ether(dst="ff:ff:ff:ff:ff:ff") / ARP(pdst=subnet)
-    answered = srp(packet,iface=iface,timeout=2)[0]
-    devices = []
-    for sent,received in answered:
-        devices.append({"ip":received.psrc,"mac":received.hwsrc})
-    return devices
 
-
+ouidata = {}
 def get_oui_database():
     file = open("data/ieee-oui.txt",mode='r')
-    ouidata = {}
     for i in file:
         if(i[0]!='#'):
             mac_vendor = i.split('\t')
             ouidata[mac_vendor[0]] = mac_vendor[-1]
 
-def lookup_vendor(devices):
-    pass
+def lookup_vendor(mac):
+    m = mac.replace(":","").upper()
+    try:
+        return ouidata[m[:6]]
+    except:
+        return "Unknown"
+    
+
+def ARP_scan(subnet,iface):
+    packet = Ether(dst="ff:ff:ff:ff:ff:ff") / ARP(pdst=subnet)
+    answered = srp(packet,iface=iface,timeout=2)[0]
+    devices = []
+    for sent,received in answered:
+        devices.append({"ip":received.psrc,"mac":received.hwsrc,"vendor":lookup_vendor(received.hwsrc)})
+    return devices
+
 def get_interface_info(iface):
     addresses = netifaces.ifaddresses(iface)
 
@@ -35,7 +41,7 @@ if __name__ == "__main__":
     if(len(sys.argv)!=2):
         sys.exit(1)
     iface = sys.argv[1]
-
+    get_oui_database()
     info = get_interface_info(iface)
     if info is None:
         sys.exit(1)
@@ -53,4 +59,5 @@ if __name__ == "__main__":
         "devices":devices
     }
 
-# json.dump(network_snapshot, sys.stdout, indent=4)
+
+json.dump(network_snapshot, sys.stdout, indent=4)
