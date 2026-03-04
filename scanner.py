@@ -59,3 +59,4 @@ if __name__ == "__main__":
 
 
 json.dump(network_snapshot, sys.stdout, indent=4)
+# TODO : GET BACK TO WORK AFTER EXAMS
